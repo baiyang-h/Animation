@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>旋转木马2</title>
+  <style>
+    * { padding: 0; margin: 0; }
+    li { list-style: none; }
+    #backdrop { background: #dcdee2; height: 100vh; }
+    #backdrop .container {
+      height: 700px;
+      width: 1100px;
+      position: absolute;
+      background: rgba(206, 170, 230, 0.274);
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      overflow: hidden;
+    }
+    #backdrop .container .carousel {
+      height: 100%;
+      position: relative;
+    }
+    #backdrop .container .carousel .carousel-item {
+      box-shadow: 0px 10px 22px rgba(0,0,0,0.33);
+      border-radius: 4px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      cursor: pointer;
+
+      width: 300px;
+      height: 450px;
+    }
+    /******************************************/
+    #backdrop .container .carousel .carousel-item:nth-child(1) {
+      background: url('../images/2gJJrH4OnNk.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(2) {
+      background: url('../images/75C8WMtI8Ao.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(3) {
+      background: url('../images/ap_jGgL225M.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(4) {
+      background: url('../images/BS-3ylqUCos.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(5) {
+      background: url('../images/ByoBSyX0Ksg.jpg') center/cover;
+    }
+    /******************************************/
+  </style>
+</head>
+<body>
+  <div id="backdrop"> 
+    <div class="container">
+      <ul class="carousel">
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

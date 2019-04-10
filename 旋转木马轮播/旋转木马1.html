@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>旋转木马1</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      list-style: none;
+    }
+    #backdrop {
+      background: #dcdee2;
+      height: 100vh;
+    }
+    #backdrop .container {
+      height: 500px;
+      width: 1100px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      overflow: hidden;
+    }
+    #backdrop .container .carousel {
+      height: 100%;
+      position: relative;
+    }
+    #backdrop .container .carousel .carousel-item {
+      box-shadow: 0px 10px 22px rgba(0,0,0,0.33);
+      border-radius: 4px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      cursor: pointer;
+
+      width: 300px;
+      height: 450px;
+    }
+    /******************************************/
+    #backdrop .container .carousel .carousel-item:nth-child(1) {
+      background: url('../images/2gJJrH4OnNk.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(2) {
+      background: url('../images/75C8WMtI8Ao.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(3) {
+      background: url('../images/ap_jGgL225M.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(4) {
+      background: url('../images/BS-3ylqUCos.jpg') center/cover;
+    }
+    #backdrop .container .carousel .carousel-item:nth-child(5) {
+      background: url('../images/ByoBSyX0Ksg.jpg') center/cover;
+    }
+    /******************************************/
+  </style>
+</head>
+<body>
+  <div id="backdrop"> 
+    <div class="container">
+      <ul class="carousel">
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+          <li class="carousel-item"></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
+<script>
+  /*
+    1. 定义一个固定宽度的盒子container，使其绝对居中。将ul中的li全都堆在一起，层叠起来
+    2. 定义一个幕布carousel，使用translateX移动，使堆起来的li处理container中间
+    3. 初始化将各个li排开，写好静态
+    4. 通过点击事件改变样式+动画
+  */
+  function getStyle(element) {
+    return element.currentStyle ? element.currentStyle : document.defaultView.getComputedStyle(element, null);
+  }
+  class Carousel {
+    constructor(element) {
+      let {fw, cw} = this.getElementDefaultData(element);    
+      this.fw = fw;     //父元素宽
+      this.cw = cw;     //子元素宽
+      this.origin = fw/2-cw/2;      //起始位置
+      this.scale = 0.9;             //缩放比例系数
+      this.defaultTranslateX = cw*0.7;  //默认间隔
+      this.opacity = 0.8;           //透明比例系数
+      this.init(element);                         
+    }
+    //初始化
+    init(element) {
+      element.style.transform = `translateX(${this.origin}px)`;
+      this.initElementAddIndex(element);
+      this.setItemElementDefaultProps(element);
+      //初次加载不需要动画
+      setTimeout(() => {
+        for(let childNode of element.children) {
+          childNode.style.transition = 'all .3s';
+        }
+      })
+    }
+    //得到元素默认数据width
+    getElementDefaultData(element) {
+      //将'100px'转为100
+      const stringPxToNumberPx = (stringPx) => {
+        return stringPx.slice(0, stringPx.length-2)
+      }
+      let fw = stringPxToNumberPx(getStyle(element).width),
+          cw = stringPxToNumberPx(getStyle(element.children[0]).width);
+      return {fw, cw};
+    }
+    /**
+     * 初始化子element，绑定属性和方法
+     * 
+     * index：是每次点击时会重排序的属性，被点击的从0开始
+     * defaultIndex：为节点一开始固定的顺序属性，而且节点时一直固定不变的，只是改变transform属性值而已
+     */
+    initElementAddIndex(parentNode) {
+      let elements = parentNode.children,
+          i = 0,
+          j = 0;
+      
+      for(let element of elements) {
+        element.index = i;     
+        element.defaultIndex = j;
+        element.onclick = () => {
+          this.afreshSort(parentNode, element);
+          this.setItemElementDefaultProps(parentNode);
+        }
+        i++;
+        j++;
+      }
+    }
+    //重新排序
+    afreshSort(parentNode, selfNode) {
+      let activeIndex = selfNode.defaultIndex,
+          list = [...parentNode.children],
+          prev = list.slice(0, activeIndex),
+          next = list.slice(activeIndex),
+          sortList = [...next, ...prev],
+          index = 0;
+
+      for(let elemnt of sortList) {
+        elemnt.index = index;
+        index++
+      }
+    }
+    //排序后element上的属性值设置 translateX、scale、opacity、zindex
+    setItemElementDefaultProps(element) {
+      let len = element.children.length;
+      [...element.children].forEach((element, index) => {
+        if(element.index<=(len-1)/2) {
+          element.style.transform = `
+            translateX(${ element.index * this.defaultTranslateX }px)
+            scale(${ this.scale ** element.index })
+          `;
+          element.style.zIndex = `${ 50 - element.index }`;
+          element.style.opacity = `${ this.opacity ** element.index }`;
+        } else {
+          element.style.transform = `
+            translateX(${ (element.index - len) * this.defaultTranslateX }px)
+            scale(${ this.scale ** (len - element.index) })
+          `;
+          element.style.zIndex = `${50 - (len-element.index)}`
+          element.style.opacity = `${ this.opacity ** (len-element.index) }`;
+        }
+      });
+    }     
+  }
+  let c = new Carousel(document.querySelector('.carousel'));
+</script>
